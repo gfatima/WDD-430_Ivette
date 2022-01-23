@@ -1,16 +1,15 @@
 <div class="row">
-  <div class="col-md-5">
-      <div class="container-fluid">
-          <div class="panel panel-default">
-              <div class="panel-heading">
-                  <p class="h2">Contacts</p>
-                  <a href="#" class="btn btn-success">New Contact</a>
-              </div>
-                  <app-contact-list></app-contact-list>
-          </div>
-      </div>
-  </div>
+  <div class="col-md-2"></div>
   <div class="col-md-4">
-      <app-contact-detail></app-contact-detail>
+    <cms-contact-list
+        (selectedContactEvent)="selectedContact = $event">
+    </cms-contact-list>
   </div>
+
+  <div class="col-md-4">
+    <cms-contact-detail *ngIf="selectedContact" [contact]="selectedContact">
+    </cms-contact-detail>
+
+  </div>
+  <div class="col-md-1"></div>
 </div>
