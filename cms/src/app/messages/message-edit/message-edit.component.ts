@@ -2,18 +2,18 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { Message } from '../message.model';
 
 @Component({
-  selector: 'app-message-edit',
+  selector: 'cms-message-edit',
   templateUrl: './message-edit.component.html',
   styleUrls: ['./message-edit.component.css']
 })
 export class MessageEditComponent implements OnInit {
 
-  currentSender: string = "Nate Ricks";
   @ViewChild('subject') subjectInputRef: ElementRef;
   @ViewChild('msgText') msgTextInputRef: ElementRef;
 
   @Output() addMessageEvent = new EventEmitter<Message>();
-  sender: 'Aaron H.';
+
+  currentSender: string = 'Edd Miller';
 
   constructor() { }
 
@@ -21,12 +21,9 @@ export class MessageEditComponent implements OnInit {
   }
 
   onSendMessage() {
-    const msgId = '99';
     const msgSubject = this.subjectInputRef.nativeElement.value;
     const msgText = this.msgTextInputRef.nativeElement.value;
-
-    const msgSender = this.sender;
-    const newMessage = new Message(msgId, msgSubject, msgText, msgSender);
+    const newMessage = new Message("001", msgSubject, msgText, this.currentSender);
     this.addMessageEvent.emit(newMessage);
   }
 
