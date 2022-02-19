@@ -11,6 +11,17 @@ export const MOCKCONTACTS: Contact[] = [
     imageUrl: '../../assets/images/barzeer.jpg',
     group: null
   },
+
+  /*
+    {
+    id: '1',
+    name: 'Rex Barzee',
+    email: 'barzeer@byui.edu',
+    phone: '208-496-3768',
+    imageUrl: '../../assets/images/barzeer.jpg',
+    group: null
+  },
+  */
   // index 1
   {
     id: '2',
@@ -279,3 +290,24 @@ export const MOCKCONTACTS: Contact[] = [
   ]
   }
 ];
+
+/*
+    {
+      id: '13',
+      name: 'Steven Rigby',
+      email: 'rigbys@byui.edu',
+      phone: '208-496-3774',
+      imageUrl: '../../assets/images/rigbys.jpg',
+      group: null
+    }
+
+
+        {
+      id: '17',
+      name: 'Shane Thompson',
+      email: 'thompsonda@byui.edu',
+      phone: '208-496-3776',
+      imageUrl: '../../assets/images/thompsonda.jpg',
+      group: null
+    }
+*/
