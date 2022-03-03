@@ -23,6 +23,8 @@ import { DropdownDirective } from './shared/dropdown.directive';
 import { AppRoutingModule } from './app-routing.module';
 import { DocumentEditComponent } from './documents/document-edit/document-edit.component';
 import { ContactEditComponent } from './contacts/contact-edit/contact-edit.component';
+//import { DndModule } from 'ng2-dnd';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -32,20 +34,24 @@ import { ContactEditComponent } from './contacts/contact-edit/contact-edit.compo
     ContactListComponent,
     ContactDetailComponent,
     ContactItemComponent,
+    DocumentsComponent,
+    DocumentListComponent,
     DocumentItemComponent,
     DocumentDetailComponent,
-    DocumentListComponent,
-    DocumentsComponent,
     MessageItemComponent,
     MessageEditComponent,
     MessageListComponent,
     DropdownDirective,
     DocumentEditComponent,
-    ContactEditComponent
+    ContactEditComponent,
+
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    FormsModule,
+    AppRoutingModule,
+   // DndModule.forRoot(),
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -12,13 +12,19 @@
   </div>
   <div class="panel-body">
       <div class="row">
-          <div class="col-xs-12">
-              <cms-contact-item
-                *ngFor="let contactEl of contacts"
-                [contact]="contactEl"
-                (selectedContact)="onSelected(contactEl)">
-              </cms-contact-item>
-          </div>
+        <div class="col-xs-12">
+ <!--       id="contactList"
+        cdkDropList
+        #contactList="cdkDropList"
+        [cdkDropListData]="contacts"
+        [cdkDropListConnectedTo]="['groupList']"></div>-->
+
+
+        <cms-contact-item
+          *ngFor="let contactElement of contacts"
+          [contact]="contactElement"
+          cdkDrag>
+        </cms-contact-item>
       </div>
   </div>
 </div>
