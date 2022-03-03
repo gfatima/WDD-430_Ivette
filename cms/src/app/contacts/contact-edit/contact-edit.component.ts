@@ -12,7 +12,7 @@ import { CdkDragDrop} from '@angular/cdk/drag-drop';
 })
 
 export class ContactEditComponent implements OnInit {
-  originalContact: Contact;
+  originalContact: Contact | null = null;
   contact: Contact;
   groupContacts: Contact[] = [];
   editMode: boolean = false;
@@ -25,30 +25,25 @@ export class ContactEditComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe((params: Params) => {
-      let id = params['id'];
-      if (!this.id) {
-        this.editMode = false;
-        return;
-      }
-      this.originalContact = this.contactService.getContact(this.id)!;
+    this.route.params.subscribe (
+      (params: Params) => {
+        let id = +params['id'];
+        if (id == undefined || id == null) {
+          this.editMode = false
+          return
+        }
+        this.originalContact = this.contactService.getContact(id.toString())
 
-      if (!this.originalContact){
+        if (this.originalContact == undefined || this.originalContact == null) {
+          return
+        }
+        this.editMode = true
+        this.contact = JSON.parse(JSON.stringify(this.originalContact))
+        if (this.contact.group) {
 
-        this.editMode = false;
-        return;
-      }
-
-      this.editMode = true;
-
-      this.contact = JSON.parse(JSON.stringify(this.originalContact));
-
-      if (this.contact?.group && this.contact?.group?.length > 0) {
-        this.groupContacts = JSON.parse(
-          JSON.stringify(this.originalContact.group)
-        );
-      }
-    });
+            this.groupContacts = JSON.parse(JSON.stringify(this.originalContact.group))
+          }
+      });
   }
 
   onCancel() {
@@ -86,7 +81,7 @@ export class ContactEditComponent implements OnInit {
     let value = form.value // get values from form’s fields
     let newContact = new Contact(value['id'], value['name'], value['email'], value['phone'], value['imageUrl'], this.groupContacts)
     if (this.editMode == true) {
-      this.contactService.updateContact(this.originalContact, newContact)
+      this.contactService.updateContact(this.originalContact!, newContact)
     }
 
     else {
