@@ -1,8 +1,8 @@
+import { Contact } from 'src/app/contacts/contact.model';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Contact } from '../contact.model';
 import { ContactService } from '../contact.service';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { CdkDragDrop} from '@angular/cdk/drag-drop';
 
 @Component({
@@ -26,7 +26,7 @@ export class ContactEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe((params: Params) => {
-      this.id = params['id'];
+      let id = params['id'];
       if (!this.id) {
         this.editMode = false;
         return;
@@ -82,16 +82,18 @@ export class ContactEditComponent implements OnInit {
     this.groupContacts.splice(index, 1);
    }
 
-  onSubmit(form: NgForm) {
-    let value = form.value;
-    let newContact = new Contact(value.id, value.name, value.email, value.phone, value.url, this.groupContacts);
-    if(this.editMode === true) {
+   onSubmit(form: NgForm) {
+    let value = form.value // get values from form’s fields
+    let newContact = new Contact(value['id'], value['name'], value['email'], value['phone'], value['imageUrl'], this.groupContacts)
+    if (this.editMode == true) {
       this.contactService.updateContact(this.originalContact, newContact)
     }
+
     else {
-      this.contactService.addContact(newContact);
+      console.log(newContact)
+      this.contactService.addContact(newContact)
     }
-    this.router.navigate(['/contacts']);
+    this.onCancel();
   }
 
   drop(event: CdkDragDrop<string[]>) {
