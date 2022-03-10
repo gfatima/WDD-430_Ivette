@@ -12,10 +12,20 @@ import { ContactService } from '../../contacts/contact.service';
 export class MessageItemComponent implements OnInit {
   @Input() message: Message;
   messageSender: string;
-  constructor(private contactService: ContactService) { }
+
+  constructor(private contactService: ContactService) {}
 
   ngOnInit(): void {
-    const contact: Contact | null = this.contactService.getContact(this.message.id);
-    this.messageSender = contact?.name || 'Unknown';
+
+    const contact: Contact | null = this.contactService.getContact(this.message.sender);
+
+    if (contact != null) {
+
+      this.messageSender = contact.name;
+
+    } else {
+      this.messageSender = "Unknown Sender"
+
+    }
   }
 }
