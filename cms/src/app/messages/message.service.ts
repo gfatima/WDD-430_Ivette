@@ -49,14 +49,14 @@ export class MessageService {
         'http://localhost:3000/messages'
       )
       .subscribe({
-        error: (error: any) => {
-          console.log(error);
-        },
         next: (messagesList: Message[]) => {
           this.messages = messagesList;
           this.maxMessageId = this.getMaxId();
           this.messages = this.messages.sort((a, b) => (a.id < b.id) ? 1 : (a.id > b.id) ? -1 : 0);
           this.messageListChangedEvent.next(this.messages.slice());
+        },
+        error: (error: any) => {
+          console.log(error);
         },
       });
   }
