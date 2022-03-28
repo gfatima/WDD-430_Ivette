@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Message } from './message.model';
@@ -8,7 +8,7 @@ import { Message } from './message.model';
 })
 
 export class MessageService {
- // @Output() messageChangedEvent: EventEmitter<Message[]> = new EventEmitter<Message[]>();
+  @Output() messageChangedEvent: EventEmitter<Message[]> = new EventEmitter<Message[]>();
   messageListChangedEvent = new Subject<Message[]>();
 
   messages: Message[] = [];
@@ -18,13 +18,15 @@ export class MessageService {
     this.getDatabaseData()
   }
 
-  getMessages(): Message[] {
+  getMessages() {
     return this.messages.slice();
   }
 
-  getMessage(id: string): Message | null {
-    for (const message of this.messages) {
-      if (message.id == id) {return message;}
+  getMessage(id: string){
+    for (let i = 0; i < this.messages.length; i++) {
+      if (this.messages[i].id === id) {
+        return this.messages[i];
+      }
     }
     return null;
   }
@@ -41,23 +43,10 @@ export class MessageService {
     return maxId;
   }
 
-  storeMessages() {
-    const docs = JSON.stringify(this.messages);
-    this.http
-      .put(
-        'https://cmsivettesoto-default-rtdb.firebaseio.com/messages.json',
-        docs
-      )
-      .subscribe(response => {
-        console.log(response);
-        this.messageListChangedEvent.next(this.messages.slice());
-      });
-  }
-
   getDatabaseData() {
     this.http
       .get<Message[]>(
-        'https://cmsivettesoto-default-rtdb.firebaseio.com/messages.json'
+        'http://localhost:3000/messages'
       )
       .subscribe({
         error: (error: any) => {
@@ -72,8 +61,88 @@ export class MessageService {
       });
   }
 
-   addMessage(message: Message) {
-    this.messages.push(message);
-    this.storeMessages()
-   }
+  storeMessages() {
+    const docs = JSON.stringify(this.messages);
+    this.http
+      .put(
+        'http://localhost:3000/messages',
+        docs
+      )
+      .subscribe(response => {
+        console.log(response);
+        this.messageListChangedEvent.next(this.messages.slice());
+      });
+  }
+
+  addMessage(message: Message) {
+    if (!message) {
+      return;
+    }
+
+    // make sure id of the new message is empty
+    message.id = '';
+
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+
+    // add to database
+    this.http.post<{ statusMessage: string, message: Message }>('http://localhost:3000/messages',
+      message,
+      { headers: headers })
+      .subscribe(
+        (responseData) => {
+          // add new document to documents
+          this.messages.push(responseData.message);
+          this.storeMessages();
+        }
+      );
+  }
+
+  updateMessage(originalMessage: Message, newMessage: Message) {
+    if (!originalMessage || !newMessage) {
+      return;
+    }
+
+    const pos = this.messages.indexOf(originalMessage);
+
+    if (pos < 0){
+      return;
+    }
+
+    newMessage.id = originalMessage.id;
+
+    // update database
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+
+    this.http.put<any>('http://localhost:3000/messages/' + originalMessage.id, newMessage, { headers: headers })
+      .subscribe(
+        (response: Response) => {
+          this.messages[pos] = newMessage;
+          this.storeMessages();
+          //this.messageListChangedEvent.next(this.messages.slice());
+        }
+      );
+  }
+
+  deleteMessage(message: Message) {
+
+    if (!message){
+      return;
+    }
+
+    const position = this.messages.indexOf(message);
+
+    if (position < 0){
+       return;
+    }
+
+    // delete from database
+    this.http.delete<any>('http://localhost:3000/messages/' + message.id)
+      .subscribe(
+        (response: Response) => {
+          this.messages.splice(position, 1);
+          this.storeMessages();
+         // this.messageListChangedEvent.next(this.messages.slice());
+        }
+      );
+  }
 }

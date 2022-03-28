@@ -1,6 +1,7 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Document } from './document.model';
+import { Subscription, Observable, throwError } from 'rxjs';
 import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -47,7 +48,7 @@ export class DocumentService {
   getDatabaseData() {
     this.http
       .get<Document[]>(
-        'https://cmsivettesoto-default-rtdb.firebaseio.com/documents.json'
+        "http://localhost:3000/documents"
       )
       .subscribe({
 
@@ -67,7 +68,7 @@ export class DocumentService {
     const docs = JSON.stringify(this.documents);
     this.http
       .put(
-        'https://cmsivettesoto-default-rtdb.firebaseio.com/documents.json',
+        'http://localhost:3000/documents',
         docs
       )
       .subscribe((response) => {
@@ -76,49 +77,77 @@ export class DocumentService {
       });
   }
 
-
-  addDocument(newDocument: Document) {
-
-    if (newDocument == undefined || newDocument == null) {
+  addDocument(document: Document) {
+    if (!document) {
       return;
     }
 
-    this.maxDocumentId++;
+    // make sure id of the new Document is empty
+    document.id = '';
 
-    newDocument.id = String(this.maxDocumentId);
-    this.documents.push(newDocument);
-    this.storeDocuments();
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+
+    // add to database
+    this.http.post<{ message: string, document: Document }>('http://localhost:3000/documents',
+      document,
+      { headers: headers })
+      .subscribe(
+        (responseData) => {
+          // add new document to documents
+          this.documents.push(responseData.document);
+          this.storeDocuments();
+        }
+      );
   }
 
   updateDocument(originalDocument: Document, newDocument: Document) {
-    if (originalDocument == undefined || originalDocument == null) {
-      return;
-    }
-    if (newDocument == undefined || newDocument == null) {
+    if (!originalDocument || !newDocument) {
       return;
     }
 
-    let pos: number = this.documents.indexOf(originalDocument);
+    const pos = this.documents.findIndex(d => d.id === originalDocument.id);
+
     if (pos < 0) {
       return;
     }
 
+    // set the id of the new Document to the id of the old Document
     newDocument.id = originalDocument.id;
-    this.documents[pos] = newDocument;
-    this.storeDocuments();
+    //newDocument._id = originalDocument._id;
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+
+    // update database
+    this.http.put<any>('http://localhost:3000/documents/' + originalDocument.id,
+      newDocument, { headers: headers })
+      .subscribe(
+        (response: Response) => {
+          this.documents[pos] = newDocument;
+          //this.storeDocuments();
+          this.documentListChangedEvent.next(this.documents.slice());
+        }
+      );
   }
 
   deleteDocument(document: Document) {
-    if (document == undefined || document == null) {
+
+    if (!document) {
       return;
     }
 
-    let pos: number = this.documents.indexOf(document);
+    const pos = this.documents.findIndex(d => d.id === document.id);
+
     if (pos < 0) {
       return;
     }
 
-    this.documents.splice(pos, 1);
-    this.storeDocuments();
+    // delete from database
+    this.http.delete<any>('http://localhost:3000/documents/' + document.id)
+      .subscribe(
+        (response: Response) => {
+          this.documents.splice(pos, 1);
+          this.storeDocuments();
+        }
+      );
   }
+
 }
