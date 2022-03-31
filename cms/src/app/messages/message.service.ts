@@ -18,7 +18,7 @@ export class MessageService {
     this.getDatabaseData()
   }
 
-  getMessages() {
+  getMessages(): Message[] {
     return this.messages.slice();
   }
 
@@ -79,6 +79,7 @@ export class MessageService {
       return;
     }
 
+
     // make sure id of the new message is empty
     message.id = '';
 
@@ -106,6 +107,7 @@ export class MessageService {
 
     if (pos < 0){
       return;
+
     }
 
     newMessage.id = originalMessage.id;

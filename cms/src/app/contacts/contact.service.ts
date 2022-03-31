@@ -17,7 +17,7 @@ export class ContactService {
     this.getDatabaseData();
   }
 
-  getContacts() {
+  getContacts(): Contact[] {
     return this.contacts.slice();
   }
 
