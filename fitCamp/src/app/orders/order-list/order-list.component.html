@@ -1,0 +1,17 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <div class="row ">
+      <span class="pull-left title col-center">ORDERS</span>
+      <a routerLink="new" class="btn btn-success pull-right">Add Order</a>
+    </div>
+  </div>
+  <div class="panel-body">
+    <div class="center-panel">
+      <fitCamp-order-item
+      *ngFor="let orderEl of orders"
+      [order]="orderEl">
+      </fitCamp-order-item>
+    </div>
+  </div>
+
+</div>

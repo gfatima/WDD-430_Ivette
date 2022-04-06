@@ -1,0 +1,23 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+      <div class="row">
+          <h2 class="margin15L fw-bold">{{client?.name}}</h2>
+      </div>
+      <div class="row">
+          <div class="pull-left">
+              <img src="{{client?.imageUrl}}" alt="{{client?.name}}" class="img-responsive margin15L margintop10 marginbot10" style="max-height: 100px;">
+          </div>
+          <div class="pull-right">
+              <button (click)="onDelete()" class="btn btn-danger margin15R margintop40">Delete</button>
+          </div>
+          <div class="pull-right">
+              <button routerLink="edit" class="btn btn-primary margin5R margintop40">Edit</button>
+          </div>
+          <div class="clearfix"></div>
+      </div>
+  </div>
+  <div class="panel-body">
+      <h4 class="list-group-item-heading "><strong>Email: </strong>{{client?.email}}</h4>
+      <h4 class="list-group-item-heading "><strong>Phone: </strong>{{client?.phone}}</h4>
+  </div>
+</div>

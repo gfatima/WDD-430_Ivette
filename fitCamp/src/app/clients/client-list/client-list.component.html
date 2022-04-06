@@ -1,0 +1,24 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <div class="row">
+      <span class="pull-left title text-center">CLIENTS</span>
+    </div>
+    <div class="row">
+      <div class="input-group pull-left pad-left-right col-xs-7">
+        <input class="form-control" #searchBox (keyup)="search(searchBox.value)" placeholder="Enter a search value">
+        <div class="glyphicon glyphicon-search input-group-addon" (click)="search(searchBox.value)"></div>
+      </div>
+      <div class="pull-right pad-left-right">
+        <a class="btn btn-success" [routerLink]="['new']">New Client</a>
+      </div>
+    </div>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-xs-12">
+
+        <fitCamp-client-item *ngFor="let clientElement of clients | clientsFilter:term" [client]="clientElement" cdkDrag>
+        </fitCamp-client-item>
+      </div>
+    </div>
+  </div>

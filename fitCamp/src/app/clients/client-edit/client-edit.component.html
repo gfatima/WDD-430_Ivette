@@ -1,0 +1,111 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <form id="client-edit" (ngSubmit)="onSubmit(f)" #f="ngForm">
+      <div class="row">
+        <div class="col-sm-12 form-group">
+          <label for="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            class="form-control required"
+            size="120"
+            max="120"
+            name="name"
+            [ngModel]="client?.name"
+            #name="ngModel"
+            required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12 form-group">
+          <label for="email">Email:</label>
+          <input
+            type="text"
+            id="email"
+            class="form-control required"
+            size="120"
+            max="255"
+            name="email"
+            [ngModel]="client?.email"
+            #email="ngModel"
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+            required>
+        </div>
+      </div>
+
+      <div class="alert alert-danger" *ngIf="email.touched && email.invalid && email.errors?.['pattern']">Please enter a valid email address.</div>
+
+      <div class="row">
+        <div class="col-sm-12 form-group">
+          <label for="phone">Phone:</label>
+          <input
+            type="text"
+            id="phone"
+            class="form-control invalid"
+            size="150"
+            max="255"
+            name="phone"
+            [ngModel]="client?.phone"
+            #phone="ngModel"
+            pattern="\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*"
+            >
+        </div>
+      </div>
+
+      <div class="alert alert-danger" *ngIf="phone.touched && phone.invalid && phone.errors?.['pattern']">Please enter a valid telephone number.
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12 form-group">
+          <label for="imageUrl">Image URL:</label>
+          <input
+            type="text"
+            id="imageUrl"
+            class="form-control"
+            size="150"
+            max="255"
+            name="imageUrl"
+            [ngModel]="client?.imageUrl"
+            #imageUrl="ngModel">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group">
+          <label for="groupList">Group Clients:</label>
+
+          <div class="alert alert-success" *ngIf="">Client Added.</div>
+
+          <div class="alert alert-danger" *ngIf="">Client cannot be added, either because
+            it’s already in the group, or it’s the same as the parent.</div>
+
+            <div *ngFor="let client of groupClients; let i = index">
+
+              <div>
+                <fitCamp-client-item
+                  class="col-sm-11"
+                  [client]="client"
+                  ></fitCamp-client-item>
+                <button class="btn btn-danger col-sm-2 deleteButton" (click)="onRemoveItem(i)">X</button>
+              </div>
+            </div>
+            <span class="dragMsg" *ngIf="groupClients.length < 1">Drag clients in group here</span>
+          </div>
+
+        </div>
+
+      <div class="alert alert-danger" *ngIf="name.errors?.['required'] || email.errors?.['required']"
+      >The Name and Email fields are required.</div>
+
+      <div class="row">
+        <div class="col-xs-12 btn-toolbar">
+          <button class="btn btn-success" type="submit" [disabled]="name.errors?.['required'] || email.errors?.['required'] || (phone.errors?.['pattern'] && phone.touched)
+          || (email.errors?.['pattern'] && email.touched)">Save</button>
+          <button class="btn btn-primary" type="button" (click)="onCancel()">Cancel</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
